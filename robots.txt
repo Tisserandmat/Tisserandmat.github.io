@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tisserandmat.github.io/sitemap.xml
