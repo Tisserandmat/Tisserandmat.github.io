@@ -179,11 +179,27 @@ input {
 
 .btn-ghost:hover { background: var(--ink); color: var(--bg); }
 
+.actions-note {
+  margin: 1rem 0 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.8rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.actions .btn {
+  box-sizing: border-box;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .paper {

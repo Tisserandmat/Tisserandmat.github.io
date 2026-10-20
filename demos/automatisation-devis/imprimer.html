@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aperçu du devis — projet de démonstration</title>
+  <meta name="robots" content="noindex">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      color: #1b1814;
+      background: #efeae2;
+      line-height: 1.45;
+    }
+
+    .toolbar {
+      width: min(190mm, calc(100% - 2rem));
+      margin: 1rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 0.8rem;
+      align-items: center;
+    }
+
+    .toolbar a,
+    .toolbar button {
+      font-family: "Segoe UI", sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      min-height: 44px;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      text-decoration: none;
+    }
+
+    .toolbar a {
+      color: #0b3f35;
+    }
+
+    .toolbar button {
+      border: 0;
+      background: #0f5c4c;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .toolbar p {
+      flex: 1 1 16rem;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+
+    .sheet {
+      width: min(190mm, calc(100% - 2rem));
+      margin: 1rem auto 2rem;
+      background: #fff;
+      color: #1b1814;
+      padding: 1.25rem 1.2rem 1.6rem;
+      border: 1px solid #ddd4c6;
+    }
+
+    .demo {
+      margin: 0 0 1.2rem;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7c2d12;
+    }
+
+    h1 {
+      margin: 0.2rem 0 0;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      overflow-wrap: anywhere;
+    }
+
+    .meta {
+      margin: 0.35rem 0 1.1rem;
+      color: #5c564e;
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr);
+      gap: 0.35rem 0.8rem;
+      margin: 0;
+    }
+
+    dt { font-weight: 700; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+
+    .amount {
+      margin: 1.2rem 0 0.4rem;
+      font-size: 2.2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .foot {
+      margin: 1.4rem 0 0;
+      padding-top: 0.8rem;
+      border-top: 1px solid #1b1814;
+      color: #5c564e;
+      font-size: 0.95rem;
+    }
+
+    .missing {
+      width: min(40rem, calc(100% - 2rem));
+      margin: 2rem auto;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    @media (max-width: 520px) {
+      dl { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @page { size: A4; margin: 16mm; }
+
+    @media print {
+      html, body { background: #fff; overflow: visible; }
+      .no-print { display: none !important; }
+      .sheet {
+        width: auto;
+        max-width: none;
+        margin: 0;
+        border: 0;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <a href="./">Retour à la démo</a>
+    <button type="button" id="print-btn">Imprimer</button>
+    <p>Utilisez Partager &gt; Enregistrer en PDF si l’impression ne s’ouvre pas.</p>
+  </div>
+  <article class="sheet" id="sheet" hidden>
+    <p class="demo">Projet de démonstration</p>
+    <p class="meta" id="doc-kind">Devis</p>
+    <h1 id="doc-title"></h1>
+    <p class="meta" id="doc-date"></p>
+    <dl>
+      <dt>Client</dt><dd id="doc-client"></dd>
+      <dt>E-mail</dt><dd id="doc-email"></dd>
+      <dt>Prestation</dt><dd id="doc-prestation"></dd>
+      <dt>Statut</dt><dd id="doc-statut"></dd>
+    </dl>
+    <p class="amount" id="doc-amount"></p>
+    <p class="foot">Projet de démonstration. Entreprise et client fictifs. Ce document n’a pas été envoyé.</p>
+  </article>
+  <p class="missing no-print" id="missing" hidden>Aucun devis à afficher. <a href="./">Retour à la démo</a>.</p>
+  <script>
+    (function () {
+      var sheet = document.getElementById("sheet");
+      var missing = document.getElementById("missing");
+
+      function showMissing() {
+        missing.hidden = false;
+      }
+
+      function readQuote() {
+        var raw = location.hash ? location.hash.slice(1) : "";
+        if (!raw) return null;
+        try {
+          var data = JSON.parse(decodeURIComponent(raw));
+          if (!data || typeof data.id !== "string" || typeof data.client !== "string") return null;
+          return data;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function text(id, value) {
+        document.getElementById(id).textContent = value;
+      }
+
+      function formatDay(parts) {
+        if (!Array.isArray(parts) || parts.length < 3) return "";
+        var date = new Date(parts[0], parts[1] - 1, parts[2]);
+        return new Intl.DateTimeFormat("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }).format(date);
+      }
+
+      function formatEuro(amount) {
+        var number = Number(amount);
+        if (!isFinite(number)) return "";
+        return new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: "EUR",
+          maximumFractionDigits: 0
+        }).format(number);
+      }
+
+      var quote = readQuote();
+      if (!quote) {
+        showMissing();
+        return;
+      }
+
+      text("doc-title", "Devis " + quote.id);
+      text("doc-date", "Établi le " + formatDay(quote.sent));
+      text("doc-client", quote.client);
+      text("doc-email", quote.email || "");
+      text("doc-prestation", quote.prestation || "");
+      text("doc-statut", quote.statut || "");
+      text("doc-amount", formatEuro(quote.montant));
+      document.title = "Devis " + quote.id + " — projet de démonstration";
+      sheet.hidden = false;
+
+      function tryPrint() {
+        try { window.print(); } catch (error) {}
+      }
+
+      document.getElementById("print-btn").addEventListener("click", tryPrint);
+      function schedulePrint() { setTimeout(tryPrint, 300); }
+      if (document.readyState === "complete") schedulePrint();
+      else window.addEventListener("load", schedulePrint);
+    })();
+  </script>
+</body>
+</html>
