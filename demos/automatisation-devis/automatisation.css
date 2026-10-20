@@ -88,15 +88,19 @@ h3 { margin: 0 0 0.4rem; font-size: 1.35rem; }
 
 .app {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   margin: 1rem 0 2rem;
 }
 
 .panel {
+  min-width: 0;
+  max-width: 100%;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 1rem;
+  overflow-wrap: break-word;
 }
 
 .field { margin-bottom: 0.75rem; }
@@ -156,11 +160,24 @@ input {
 
 .paper-top {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 1rem;
   border-bottom: 2px solid var(--ink);
   padding-bottom: 0.6rem;
   margin-bottom: 0.8rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.paper,
+.paper-top > *,
+.letter,
+dl.sheet,
+dl.sheet dd {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .paper-top strong {
@@ -225,6 +242,8 @@ dl.sheet dd { margin: 0; }
 
 .quote-list button {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   text-align: left;
   font: inherit;
   color: inherit;
@@ -233,10 +252,16 @@ dl.sheet dd { margin: 0; }
   border-radius: 12px;
   padding: 0.7rem 0.8rem;
   display: grid;
-  grid-template-columns: 6.2rem 1.2fr 0.7fr auto;
+  grid-template-columns: minmax(0, 6.2rem) minmax(0, 1.2fr) minmax(0, 0.7fr) auto;
   gap: 0.4rem 0.8rem;
   align-items: center;
   cursor: pointer;
+}
+
+.quote-list button > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .quote-list button[aria-pressed="true"] {
@@ -259,7 +284,19 @@ dl.sheet dd { margin: 0; }
 .status[data-status="relance7"] { background: var(--sun); color: var(--copper); }
 .status[data-status="accepte"] { background: var(--green-soft); color: var(--green-deep); }
 
-.explain { padding: 0.5rem 0 2.5rem; }
+.explain {
+  padding: 0.5rem 0 2.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.explain p,
+.explain li,
+.explain h2,
+.explain h3 {
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
 
 .steps {
   display: grid;
@@ -293,24 +330,38 @@ dl.sheet dd { margin: 0; }
 
 .methods {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.8rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .methods article {
+  min-width: 0;
+  max-width: 100%;
   background: var(--white);
   border-radius: 16px;
   border: 1px solid var(--line);
   padding: 1rem;
+  overflow-wrap: break-word;
 }
 
 .flow {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
   background: #1b1814;
   color: #f3efe6;
   border-radius: 12px;
   padding: 0.9rem 1rem;
-  overflow-x: auto;
   line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-x: auto;
 }
 
 .site-footer {
@@ -324,15 +375,16 @@ dl.sheet dd { margin: 0; }
 [id] { scroll-margin-top: 4.5rem; }
 
 @media (min-width: 900px) {
-  .app { grid-template-columns: 0.9fr 1.1fr; }
+  .app { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
   .span-2 { grid-column: 1 / -1; }
-  .methods { grid-template-columns: 1fr 1fr; }
+  .methods { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 
 @media (max-width: 720px) {
   .quote-list button,
-  dl.sheet { grid-template-columns: 1fr; }
+  dl.sheet { grid-template-columns: minmax(0, 1fr); }
   .status { justify-self: start; }
+  .btn { max-width: 100%; white-space: normal; }
 }
 
 @media print {
