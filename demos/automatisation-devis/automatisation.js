@@ -239,6 +239,48 @@
     actionsEl.append(button);
   }
 
+  function stageLabel(quote) {
+    if (quote.stage >= 7) return "Relance J+7";
+    if (quote.stage >= 3) return "Relance J+3";
+    return "Envoyé";
+  }
+
+  function quotePayload(quote) {
+    return {
+      id: quote.id,
+      client: quote.client,
+      email: quote.email,
+      prestation: quote.prestation,
+      montant: quote.montant,
+      sent: [
+        quote.sent.getFullYear(),
+        quote.sent.getMonth() + 1,
+        quote.sent.getDate()
+      ],
+      statut: statusOf(quote).label
+    };
+  }
+
+  function openPrint(quote) {
+    var url = "imprimer.html#" + encodeURIComponent(JSON.stringify(quotePayload(quote)));
+    var win = null;
+    try {
+      win = window.open(url, "devis-impression");
+    } catch (error) {
+      win = null;
+    }
+    if (!win) {
+      window.location.assign(url);
+      return;
+    }
+    setTimeout(function () {
+      try {
+        if (win.closed) return;
+        if (!win.location.href || win.location.href === "about:blank") win.location.href = url;
+      } catch (error) {}
+    }, 500);
+  }
+
   function renderActions(quote) {
     actionsEl.replaceChildren();
     if (!quote.closed && quote.stage === 0) {
@@ -262,19 +304,29 @@
         render();
       });
     }
-    if (!quote.closed) {
+    if (!quote.closed || quote.closed === "sans-reponse") {
       addAction("Marquer comme accepté", function () {
         quote.closed = "accepte";
         announce(quote.id + " est marqué accepté. Les relances suivantes ne partent pas.");
         render();
       });
     }
-    var printBtn = document.createElement("button");
-    printBtn.type = "button";
-    printBtn.className = "btn btn-ghost";
-    printBtn.textContent = "Imprimer l’aperçu";
-    printBtn.addEventListener("click", function () { window.print(); });
-    actionsEl.append(printBtn);
+    if (quote.closed === "accepte") {
+      addAction("Classer sans réponse", function () {
+        quote.closed = "sans-reponse";
+        announce(quote.id + " est classé sans réponse.");
+        render();
+      });
+    }
+    if (quote.closed) {
+      addAction("Rouvrir le devis", function () {
+        var back = stageLabel(quote);
+        quote.closed = null;
+        announce(quote.id + " est rouvert. Statut : " + back + ".");
+        render();
+      });
+    }
+    addAction("Imprimer l’aperçu", function () { openPrint(quote); });
   }
 
   function renderList() {
