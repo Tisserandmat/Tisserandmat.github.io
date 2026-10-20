@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Automatisation devis et relances — projet de démonstration</title>
+  <meta name="description" content="Projet de démonstration : simulation d’un devis, de relances à J+3 et J+7, et d’un tableau de suivi. Aucun e-mail n’est envoyé.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#0f5c4c">
+  <link rel="canonical" href="https://tisserandmat.github.io/demos/automatisation-devis/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Automatisation devis et relances — démonstration">
+  <meta property="og:description" content="Simulation fictive : devis, relances J+3 et J+7, tableau des statuts. Explication pour un artisan.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:url" content="https://tisserandmat.github.io/demos/automatisation-devis/">
+  <meta property="og:image" content="https://tisserandmat.github.io/assets/og-image.png">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/demo-banner.css">
+  <link rel="stylesheet" href="automatisation.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">
+    <div class="demo-banner__inner">
+      <p><strong>Projet de démonstration.</strong> Données fictives — aucun e-mail n’est envoyé, ce n’est pas un client réel.</p>
+      <a href="/">Retour au portfolio de Mathias Tisserand</a>
+    </div>
+  </div>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <main id="contenu" tabindex="-1">
+    <header class="wrap page-head">
+      <p class="kicker">Projet de démonstration</p>
+      <h1>Automatisation devis et relances</h1>
+      <p>Vous préparez un devis. Le client le reçoit. S’il ne répond pas, un rappel part au bout de 3 jours, puis un dernier au bout de 7 jours. Vous regardez seulement où en est chaque devis.</p>
+      <p>Cette page simule ce parcours dans le navigateur. Les personnes et les montants sont inventés. <a href="/#offres">Voir le tarif&nbsp;: 490&nbsp;€ par workflow, 1&nbsp;190&nbsp;€ les trois</a>. TVA non applicable, art.&nbsp;293&nbsp;B du CGI.</p>
+    </header>
+
+    <div class="wrap app">
+      <section class="panel" aria-labelledby="form-title">
+        <h2 id="form-title">1. Préparer un devis</h2>
+        <form id="quote-form">
+          <div class="field">
+            <label for="client">Nom du client</label>
+            <input id="client" name="client" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="nom@example.com" required>
+          </div>
+          <div class="field">
+            <label for="prestation">Prestation</label>
+            <input id="prestation" name="prestation" type="text" required>
+          </div>
+          <div class="field">
+            <label for="montant">Montant (€)</label>
+            <input id="montant" name="montant" type="number" min="1" step="1" inputmode="numeric" required>
+          </div>
+          <button class="btn" type="submit">Générer l’aperçu du devis</button>
+        </form>
+        <p class="muted">Les champs restent sur cette page. Rien n’est transmis à un serveur.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="preview-title">
+        <h2 id="preview-title" tabindex="-1">2. Aperçu du devis</h2>
+        <div class="paper" id="paper">
+          <div class="paper-top">
+            <div>
+              <p class="kicker">Aperçu</p>
+              <strong>Devis DEV-104</strong>
+            </div>
+            <p class="muted" style="margin:0;">Artisan fictif</p>
+          </div>
+          <dl class="sheet">
+            <dt>Client</dt><dd>Camille Bernard</dd>
+            <dt>E-mail</dt><dd>camille.bernard@example.com</dd>
+            <dt>Prestation</dt><dd>Remplacement d’un chauffe-eau</dd>
+          </dl>
+          <p class="amount">1&nbsp;280&nbsp;€</p>
+          <p class="muted">Exemple statique. Avec JavaScript, le formulaire met à jour cet aperçu. Rien n’est envoyé.</p>
+        </div>
+      </section>
+
+      <section class="panel" id="timeline-panel" aria-labelledby="timeline-title">
+        <h2 id="timeline-title">3. Relances automatiques</h2>
+        <p class="muted">Le message affiché est celui de l’étape en cours. Les boutons font avancer le calendrier pour la démo. Dans la réalité, vous n’avez pas à cliquer&nbsp;: l’envoi part seul.</p>
+        <ol class="timeline" id="timeline"></ol>
+        <div class="letter" id="letter"></div>
+        <div class="actions" id="quote-actions"></div>
+      </section>
+
+      <section class="panel" id="dashboard-panel" aria-labelledby="dash-title">
+        <h2 id="dash-title">4. Tableau des devis</h2>
+        <p class="muted">Données fictives, plus les devis que vous ajoutez. Cliquez une ligne pour voir son historique.</p>
+        <ul class="quote-list" id="quote-list"></ul>
+        <div class="actions">
+          <button class="btn btn-ghost" id="reset-demo" type="button">Réinitialiser la démo</button>
+        </div>
+      </section>
+    </div>
+
+    <p id="live" class="sr-only" aria-live="polite"></p>
+
+    <section class="wrap explain" id="comment-ca-marche">
+      <h2>Comment ça marche pour un artisan</h2>
+      <p>Pas besoin de retenir les dates. Le principe tient en cinq gestes.</p>
+      <ol class="steps">
+        <li>Vous saisissez le client, la prestation et le montant, comme dans le formulaire.</li>
+        <li>Le jour même (J0), le client reçoit le devis par e-mail.</li>
+        <li>Trois jours plus tard (J+3), s’il n’a pas répondu, un court rappel part tout seul.</li>
+        <li>Sept jours après l’envoi (J+7), un dernier message part si vous n’avez toujours pas de réponse.</li>
+        <li>Le tableau vous montre quatre états&nbsp;: envoyé, relancé, accepté, sans réponse.</li>
+      </ol>
+      <p>Si le client dit oui, vous marquez le devis accepté. Les rappels suivants ne partent pas. Vous ne réécrivez pas le même message trois jours plus tard.</p>
+
+      <h3>Qu’est-ce qui fait partir les e-mails&nbsp;?</h3>
+      <div class="methods">
+        <article>
+          <h3>Avec n8n ou Make</h3>
+          <p>Ce sont des outils qui enchaînent des actions sans que vous ouvriez votre boîte mail. On relie votre liste de devis à un scénario&nbsp;:</p>
+          <pre class="flow">Quand un devis est créé
+  → envoyer l’e-mail au client
+  → attendre 3 jours
+  → si le devis n’est pas accepté, envoyer la relance
+  → attendre jusqu’au 7e jour
+  → si toujours pas de réponse, envoyer la dernière relance</pre>
+          <p>Vous ne touchez pas au scénario au quotidien. Vous consultez le tableau, et vous notez «&nbsp;accepté&nbsp;» quand la personne vous répond.</p>
+        </article>
+        <article>
+          <h3>Avec un script</h3>
+          <p>Même idée, sans outil no-code. Un petit programme se lance chaque matin. Il lit la liste des devis. Il regarde la date d’envoi et l’état.</p>
+          <p>S’il voit un devis parti depuis 3 jours, sans réponse, il envoie la relance. Même chose à 7 jours. Le texte des messages est le vôtre, validé avant la mise en route.</p>
+          <p>Dans les deux cas, cette page ne fait qu’une simulation&nbsp;: aucun e-mail ne quitte votre navigateur.</p>
+        </article>
+      </div>
+      <p><a href="/#contact">Demander un devis gratuit</a> pour mettre ce parcours en place, ou <a href="/">revenir au portfolio</a>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Projet de démonstration de <a href="/">Mathias Tisserand</a>. Entreprises et clients fictifs. <a href="/mentions-legales.html">Mentions légales</a></p>
+    </div>
+  </footer>
+  <noscript>
+    <div class="wrap">
+      <p>La simulation interactive a besoin de JavaScript. Le principe est décrit dans la page, et aucun e-mail n’est envoyé.</p>
+    </div>
+  </noscript>
+  <script src="automatisation.js" defer></script>
+</body>
+</html>

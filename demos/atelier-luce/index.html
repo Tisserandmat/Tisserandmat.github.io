@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atelier Lucé — salon de coiffure (projet de démonstration)</title>
+  <meta name="description" content="Projet de démonstration : salon de coiffure fictif à Olivet, avec une prise de rendez-vous en ligne simulée, sans réservation réelle.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#6e3540">
+  <link rel="canonical" href="https://tisserandmat.github.io/demos/atelier-luce/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Atelier Lucé — projet de démonstration">
+  <meta property="og:description" content="Salon fictif avec réservation en ligne simulée. Aucun rendez-vous n’est enregistré.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:url" content="https://tisserandmat.github.io/demos/atelier-luce/">
+  <meta property="og:image" content="https://tisserandmat.github.io/assets/og-image.png">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/fonts-cormorant.css">
+  <link rel="stylesheet" href="/css/demo-banner.css">
+  <link rel="stylesheet" href="coiffure.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">
+    <div class="demo-banner__inner">
+      <p><strong>Projet de démonstration.</strong> Entreprise fictive — ce n’est pas un client réel.</p>
+      <a href="/">Retour au portfolio de Mathias Tisserand</a>
+    </div>
+  </div>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="wrap mast">
+    <a class="word" href="#accueil">Atelier Lucé</a>
+    <nav aria-label="Pages de la démonstration">
+      <a href="#prestations">Prestations</a>
+      <a href="#reservation">Rendez-vous</a>
+      <a href="#infos">Infos</a>
+    </nav>
+  </header>
+
+  <main id="contenu" tabindex="-1">
+    <section class="hero wrap" id="accueil">
+      <p style="margin:0 0 .4rem;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;font-weight:700;color:#8a6232;">Coiffure · Olivet</p>
+      <h1>Le salon, <em>sans l’attente au téléphone.</em></h1>
+      <p class="lede">Coupe, couleur et soin. Choisissez une prestation, un jour et un horaire. Cette page montre le parcours&nbsp;: aucune réservation n’est enregistrée.</p>
+    </section>
+
+    <section class="section" id="prestations">
+      <div class="wrap">
+        <h2>Prestations</h2>
+        <p class="lede">Tarifs fictifs, affichés pour la démonstration. Ils ne correspondent pas à un salon réel.</p>
+        <ul class="price-list">
+          <li><span><strong>Coupe femme</strong><br>45&nbsp;min</span><span>42&nbsp;€</span></li>
+          <li><span><strong>Coupe homme</strong><br>30&nbsp;min</span><span>24&nbsp;€</span></li>
+          <li><span><strong>Couleur</strong><br>1&nbsp;h&nbsp;30</span><span>68&nbsp;€</span></li>
+          <li><span><strong>Brushing</strong><br>30&nbsp;min</span><span>28&nbsp;€</span></li>
+          <li><span><strong>Soin profond</strong><br>45&nbsp;min</span><span>35&nbsp;€</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="reservation">
+      <div class="wrap">
+        <h2>Prendre rendez-vous</h2>
+        <p class="lede">Démonstration visuelle. Le créneau choisi reste dans votre navigateur et n’est envoyé nulle part.</p>
+        <form id="booking-form" class="booking" novalidate>
+          <fieldset class="block" style="border:0;padding:0;margin:0;">
+            <legend class="group-label">1. Prestation</legend>
+            <div class="choices" id="services">
+              <label class="choice">
+                <input type="radio" name="service" value="coupe-femme" data-name="Coupe femme" data-minutes="45" data-price="42" required>
+                <strong>Coupe femme</strong>
+                <small>45&nbsp;min · 42&nbsp;€</small>
+              </label>
+              <label class="choice">
+                <input type="radio" name="service" value="coupe-homme" data-name="Coupe homme" data-minutes="30" data-price="24">
+                <strong>Coupe homme</strong>
+                <small>30&nbsp;min · 24&nbsp;€</small>
+              </label>
+              <label class="choice">
+                <input type="radio" name="service" value="couleur" data-name="Couleur" data-minutes="90" data-price="68">
+                <strong>Couleur</strong>
+                <small>1&nbsp;h&nbsp;30 · 68&nbsp;€</small>
+              </label>
+              <label class="choice">
+                <input type="radio" name="service" value="brushing" data-name="Brushing" data-minutes="30" data-price="28">
+                <strong>Brushing</strong>
+                <small>30&nbsp;min · 28&nbsp;€</small>
+              </label>
+              <label class="choice">
+                <input type="radio" name="service" value="soin" data-name="Soin profond" data-minutes="45" data-price="35">
+                <strong>Soin profond</strong>
+                <small>45&nbsp;min · 35&nbsp;€</small>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="block">
+            <p class="group-label" id="days-label">2. Jour</p>
+            <div class="choices" id="days" role="group" aria-labelledby="days-label"></div>
+            <p class="hint">Les lundis et dimanches sont fermés dans cette démo. Les quatorze prochains jours sont proposés.</p>
+          </div>
+
+          <div class="block">
+            <p class="group-label" id="times-label">3. Horaire</p>
+            <div class="choices" id="times" role="group" aria-labelledby="times-label"></div>
+            <p class="hint" id="times-hint">Choisissez d’abord une prestation et un jour.</p>
+          </div>
+
+          <div class="block">
+            <p class="group-label">4. Vos coordonnées</p>
+            <div class="field">
+              <label class="plain" for="nom">Nom</label>
+              <input id="nom" name="nom" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label class="plain" for="tel">Téléphone</label>
+              <input id="tel" name="tel" type="tel" autocomplete="tel" required>
+            </div>
+          </div>
+
+          <p class="error" id="booking-error" role="alert" hidden></p>
+          <button class="btn" type="submit">Confirmer le rendez-vous (démo)</button>
+        </form>
+
+        <div id="confirmation" class="confirm" hidden>
+          <h2 id="conf-title" tabindex="-1">Demande fictive confirmée</h2>
+          <p>Aucune réservation n’a été transmise au salon. Voici l’écran qu’une cliente verrait.</p>
+          <dl>
+            <dt>Prestation</dt>
+            <dd id="conf-service"></dd>
+            <dt>Quand</dt>
+            <dd id="conf-when"></dd>
+            <dt>Durée</dt>
+            <dd id="conf-duration"></dd>
+            <dt>Tarif affiché</dt>
+            <dd id="conf-price"></dd>
+            <dt>Nom</dt>
+            <dd id="conf-nom"></dd>
+            <dt>Téléphone</dt>
+            <dd id="conf-tel"></dd>
+          </dl>
+          <button class="btn" id="booking-reset" type="button">Faire une autre démonstration</button>
+        </div>
+        <noscript>
+          <p>La réservation interactive a besoin de JavaScript. Ceci est un exemple d’interface, sans prise de rendez-vous réelle.</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section class="section" id="infos">
+      <div class="wrap">
+        <h2>Infos pratiques <span class="badge">Fictif</span></h2>
+        <div class="info-grid">
+          <article class="info-card">
+            <h3>Adresse fictive</h3>
+            <p>12 rue des Jardins<br>45160 Olivet</p>
+          </article>
+          <article class="info-card">
+            <h3>Horaires fictifs</h3>
+            <p>Mardi – vendredi&nbsp;: 9&nbsp;h – 19&nbsp;h<br>Samedi&nbsp;: 9&nbsp;h – 17&nbsp;h<br>Lundi et dimanche&nbsp;: fermé</p>
+          </article>
+          <article class="info-card">
+            <h3>Contact fictif</h3>
+            <p><a href="tel:+33238004567">02&nbsp;38&nbsp;00&nbsp;45&nbsp;67</a><br><a href="mailto:bonjour@atelier-luce.example">bonjour@atelier-luce.example</a></p>
+            <p>Numéro et e-mail inventés.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>Atelier Lucé</strong> est un salon inventé pour cette démonstration. Réalisation&nbsp;: <a href="/">Mathias Tisserand</a>.</p>
+      <p><a href="/mentions-legales.html">Mentions légales du portfolio</a></p>
+    </div>
+  </footer>
+  <script src="coiffure.js" defer></script>
+</body>
+</html>
